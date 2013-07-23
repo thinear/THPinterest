@@ -9,6 +9,7 @@ import com.thinear.pinterest.api.BaseApiResponseHandler;
 
 import org.apache.commons.codec.binary.Hex;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Iterator;
@@ -26,12 +27,12 @@ import javax.crypto.spec.SecretKeySpec;
 public class BaseApiExecutor {
     private static final String TAG = "BaseApiExecutor";
 
-    private static String appendAccessToken(final String url) {
-        if(url == null) {
+    private static String appendAccessToken(final String path) {
+        if(path == null) {
             return null;
         }
 
-        return String.format("%s%saccess_token=%s", url, (url.contains("?") ? "&" : "?"), ApiExecutor.sAccessToken);
+        return String.format("%s%saccess_token=%s", path, (path.contains("?") ? "&" : "?"), ApiExecutor.sAccessToken);
     }
 
     private static String formatParamsValue(String value) throws UnsupportedEncodingException {
@@ -130,13 +131,48 @@ public class BaseApiExecutor {
         }
     }
 
-    private static void fillHandler(String method, String url, BaseApiResponseHandler handler) {
+    protected static void put(String path) {
+        fillHandler("PUT", path, null);
+        ApiHttpClient.put(appendAccessToken(path), null);
+    }
+
+    protected static void put(String path, RequestParams params, BaseApiResponseHandler handler) {
+        fillHandler("PUT", path, handler);
+        ApiHttpClient.put(appendAccessToken(path), params, handler);
+    }
+
+    protected static void post(String path, String param, RequestParams params, BaseApiResponseHandler handler) {
+        path = String.format(path, param);
+        fillHandler("POST", path, handler);
+        ApiHttpClient.post(appendAccessToken(path), params, handler);
+        debugLogtrace(appendAccessToken(path));
+    }
+
+    protected static void put(String path, String param, BaseApiResponseHandler handler) {
+        path = String.format(path, param);
+        fillHandler("PUT", path, handler);
+        ApiHttpClient.put(appendAccessToken(path), handler);
+    }
+
+    protected static void post(String path, RequestParams params, BaseApiResponseHandler handler) {
+        fillHandler("POST", path, handler);
+        ApiHttpClient.post(appendAccessToken(path), params, handler);
+        debugLogtrace(appendAccessToken(path));
+    }
+
+    protected static void delete(String path, String param, BaseApiResponseHandler handler) {
+        path = String.format(path, param);
+        fillHandler("DELETE", path, handler);
+        ApiHttpClient.delete(appendAccessToken(path), handler);
+    }
+
+    private static void fillHandler(String method, String path, BaseApiResponseHandler handler) {
         if(ApiExecutor.sAccessToken == null) {
             // TODO
         }
         if(handler != null) {
             handler.method = method;
-            handler.base_url = url;
+            handler.base_url = path;
         }
     }
 
@@ -144,5 +180,23 @@ public class BaseApiExecutor {
         if(ApiExecutor.sDebug) {
             Log.i(TAG, url);
         }
+    }
+
+    protected static void get(String path, BaseApiResponseHandler handler) {
+        fillHandler("GET", path, handler);
+        ApiHttpClient.get(appendAccessToken(path), handler);
+        debugLogtrace(appendAccessToken(path));
+    }
+
+    protected static void post(String path, String param, BaseApiResponseHandler handler) {
+        path = String.format(path, param);
+        fillHandler("POST", path, handler);
+        ApiHttpClient.post(appendAccessToken(path), handler);
+        debugLogtrace(appendAccessToken(path));
+    }
+
+    protected static void delete(String path, BaseApiResponseHandler handler) {
+        fillHandler("DELETE", path, handler);
+        ApiHttpClient.delete(appendAccessToken(path), handler);
     }
 }

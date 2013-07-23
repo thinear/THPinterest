@@ -131,4 +131,14 @@ public class ApiResponseJsonWrapper {
             return message;
         }
     }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("[code=" + code + "]\n");
+        builder.append("[status=" + status + "]\n");
+        builder.append("[message=" + message + "]\n");
+        builder.append("[data=" + data.toString() + "]\n");
+        return builder.toString();
+    }
 }

@@ -5,12 +5,24 @@
 
     <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="17" />
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
+        android:name="com.thinear.pinterest.base.PinterestApplication"
         android:theme="@style/Theme.Pinterest"
         android:label="@string/app_name"
         android:icon="@drawable/app_icon"
         android:hardwareAccelerated="true"
         android:allowBackup="true" >
+
+        <activity android:label="@string/app_name" android:name="com.thinear.pinterest.activity.TestActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>

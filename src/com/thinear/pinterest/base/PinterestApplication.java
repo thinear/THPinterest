@@ -19,7 +19,7 @@ import java.util.UUID;
 
 public class PinterestApplication extends BaseApplication {
 
-    public static boolean DEBUG = false;
+    public static boolean DEBUG = true;
 
     @Override
     protected void init() {
